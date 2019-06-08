@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>A New Chart</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {packages: ['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+      var chart_options = {
+                          width: 850,
+                          height: 450,
+                          title: "Favorite Food"
+            };
+      function drawChart(){
+        var food_data = new google.visualization.DataTable();
+        //define columns for the DataTable instance
+        food_data.addColumn('string', 'Food Name');
+        food_data.addColumn('number', 'Votes');
+           
+        //add data to food_data
+        food_data.addRows([
+          ["Pizza", 6],
+          ["Hotpot", 10],
+          ["Pasta", 7],
+          ["McDonalds", 4],
+          ["Tim Hortons", 8]
+        ]);
+        var chart = new google.visualization.PieChart(document.getElementById('food_chart'));
+        chart.draw(food_data, chart_options);
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Chart Project</h1>
+    <div id="food_chart"></div>
+  </body>
+</html>

@@ -77,10 +77,15 @@ public class MessageServlet extends HttpServlet {
 
     String user = userService.getCurrentUser().getEmail();
     String text = Jsoup.clean(request.getParameter("text"), Whitelist.basic());
-    //change to allow HTML tags
-    Message message = new Message(user, text);
-    datastore.storeMessage(message);
+    
 
+    //String text = request.getParameter("text");
+    // only allow BBCode using BBCode library
+    // Document document = new BBCodeParser().buildDocument(text,null);
+    // string htmlText = new BBcodeToHTMLTransformer().transform(document);
+    
+     Message message = new Message(user, text);
+    datastore.storeMessage(message);
     response.sendRedirect("/user-page.html?user=" + user);
   }
 }
