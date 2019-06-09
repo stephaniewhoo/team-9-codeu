@@ -29,6 +29,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
+import org.primeframework.transformer.service.BBCodeParser;
+import org.primeframework.transformer.service.BBCodeToHTMLTransformer;
+import org.primeframework.transformer.service.Transformer.TransformFunction.HTMLTransformFunction;
 
 /** Handles fetching and saving {@link Message} instances. */
 @WebServlet("/messages")
@@ -76,15 +79,15 @@ public class MessageServlet extends HttpServlet {
     }
 
     String user = userService.getCurrentUser().getEmail();
-    String text = Jsoup.clean(request.getParameter("text"), Whitelist.basic());
+   // String text = Jsoup.clean(request.getParameter("text"), Whitelist.basic());
     
 
-    //String text = request.getParameter("text");
+    String text = request.getParameter("text");
     // only allow BBCode using BBCode library
-    // Document document = new BBCodeParser().buildDocument(text,null);
-    // string htmlText = new BBcodeToHTMLTransformer().transform(document);
-    
-     Message message = new Message(user, text);
+    String htmlText = new BBCodeToHTMLTransformer().transform(new BBCodeParser().buildDocument(text,null),(node) -> {
+    return true;
+    },new HTMLTransformFunction(),null);
+    Message message = new Message(user, htmlText);
     datastore.storeMessage(message);
     response.sendRedirect("/user-page.html?user=" + user);
   }
