@@ -87,7 +87,12 @@ public class MessageServlet extends HttpServlet {
     String htmlText = new BBCodeToHTMLTransformer().transform(new BBCodeParser().buildDocument(text,null),(node) -> {
     return true;
     },new HTMLTransformFunction(),null);
-    Message message = new Message(user, htmlText);
+
+    // replace image urls with html tags
+    String regex = "(https?://\\S+\\.(png|jpg))";
+    String replacement = "<img src=\"$1\" />";
+    String textWithImagesReplaced = htmlText.replaceAll(regex, replacement);
+    Message message = new Message(user, textWithImagesReplaced);
     datastore.storeMessage(message);
     response.sendRedirect("/user-page.html?user=" + user);
   }
