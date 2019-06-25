@@ -23,15 +23,13 @@ import com.google.codeu.data.Message;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.List;
+
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
-import org.primeframework.transformer.service.BBCodeParser;
-import org.primeframework.transformer.service.BBCodeToHTMLTransformer;
-import org.primeframework.transformer.service.Transformer.TransformFunction.HTMLTransformFunction;
 
 /** Handles fetching and saving {@link Message} instances. */
 @WebServlet("/messages")
@@ -45,8 +43,8 @@ public class MessageServlet extends HttpServlet {
   }
 
   /**
-   * Responds with a JSON representation of {@link Message} data for a specific user. Responds with
-   * an empty array if the user is not provided.
+   * Responds with a JSON representation of {@link Message} data for a specific
+   * user. Responds with an empty array if the user is not provided.
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -79,9 +77,10 @@ public class MessageServlet extends HttpServlet {
     }
 
     String user = userService.getCurrentUser().getEmail();
-    
-    // since CKEdit input html 
+
+    // since CKEdit input html
     String text = Jsoup.clean(request.getParameter("text"), Whitelist.basicWithImages());
+
     // replace image urls with html tags
     String regex = "(https?://\\S+\\.(png|jpg))";
     String replacement = "<img src=\"$1\" />";
