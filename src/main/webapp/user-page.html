@@ -16,36 +16,62 @@ limitations under the License.
 
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>User Page</title>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="/css/main.css">
-    <link rel="stylesheet" href="/css/user-page.css">
-    <script src="/js/user-page-loader.js"></script>
-    <script src="https://cdn.ckeditor.com/ckeditor5/11.2.0/classic/ckeditor.js"></script>
-  </head>
-  <body onload="buildUI();">
-    <nav>
-      <ul id="navigation">
-        <li><a href="/">Home</a></li>
-        <li><a href="/aboutus.html">About Our Team</a></li>
-      </ul>
-    </nav>
-    <h1 id="page-title">User Page</h1>
 
-    <form id="message-form" action="/messages" method="POST" class="hidden">
-      Enter a new message:
-      <br/>
-      <textarea name="text" id="message-input"></textarea>
-      <br/>
-      <input type="submit" value="Submit">
-    </form>
-    <hr/>
+<head>
+  <title>User Page</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/user-page.css">
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
+  <script src="http://malsup.github.com/jquery.form.js"></script>
+  <script src="/js/user-page-loader.js"></script>
+  <script src="https://cdn.ckeditor.com/ckeditor5/12.2.0/classic/ckeditor.js"></script>
+  <script>
+    function createHiddenForm() {
+      var myForm = document.createElement('form');
+      myForm.setAttribute('id', 'myForm');
+      myForm.setAttribute('method', 'POST');
+      myForm.setAttribute('enctype', 'multipart/form-data');
+      myForm.setAttribute('class', 'hidden');
+      document.body.appendChild(myForm);
+    }
+  </script>
+  <style>
+    /* Form is hidden by default. */
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
 
-    <div id="message-container">Loading...</div>
+<body onload="buildUI(); createHiddenForm();">
+  <nav>
+    <ul id="navigation">
+      <li><a href="/">Home</a></li>
+      <li><a href="/aboutus.html">About Our Team</a></li>
+    </ul>
+  </nav>
+  <h1 id="page-title">User Page</h1>
 
-  </body>
-     <script type="text/javascript">
-       ClassicEditor.create( document.getElementById('message-input') );
-    </script>
+  <form id="message-form" action="/messages" method="POST" class="hidden">
+    Enter a new message:
+    <br />
+    <textarea name="text" id="message-input"></textarea>
+    <br />
+    <input type="submit" value="Submit">
+  </form>
+  <hr />
+
+  <div id="message-container">Loading...</div>
+</body>
+<script src="/js/MyUploadAdapter.js"></script>
+<script type="text/javascript">
+  ClassicEditor.create(document.getElementById('message-input'), {
+    extraPlugins: [MyCustomUploadAdapterPlugin],
+  })
+    .catch(error => {
+      console.log(error);
+    });
+</script>
+
 </html>

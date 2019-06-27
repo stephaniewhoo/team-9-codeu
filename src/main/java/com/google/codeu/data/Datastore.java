@@ -47,46 +47,42 @@ public class Datastore {
     datastore.put(messageEntity);
   }
 
-
   /**
    * Helper functions to add messages to a given arr
    *
    * @return null but mutate the array in the param with info
    */
 
- public void addMessages(List<Message> messages, PreparedQuery results){
+  public void addMessages(List<Message> messages, PreparedQuery results) {
     for (Entity entity : results.asIterable()) {
-   try {
-    String idString = entity.getKey().getName();
-    UUID id = UUID.fromString(idString);
-    String user = (String) entity.getProperty("user");
-    String text = (String) entity.getProperty("text");
-    long timestamp = (long) entity.getProperty("timestamp");
+      try {
+        String idString = entity.getKey().getName();
+        UUID id = UUID.fromString(idString);
+        String user = (String) entity.getProperty("user");
+        String text = (String) entity.getProperty("text");
+        long timestamp = (long) entity.getProperty("timestamp");
 
-    Message message = new Message(id, user, text, timestamp);
-    messages.add(message);
-   } catch (Exception e) {
-    System.err.println("Error reading message.");
-    System.err.println(entity.toString());
-    e.printStackTrace();
-   }
+        Message message = new Message(id, user, text, timestamp);
+        messages.add(message);
+      } catch (Exception e) {
+        System.err.println("Error reading message.");
+        System.err.println(entity.toString());
+        e.printStackTrace();
+      }
+    }
   }
-}
-
 
   /**
    * Gets messages posted by a specific user.
    *
-   * @return a list of messages posted by the user, or empty list if user has never posted a
-   *     message. List is sorted by time descending.
+   * @return a list of messages posted by the user, or empty list if user has
+   *         never posted a message. List is sorted by time descending.
    */
   public List<Message> getMessages(String user) {
     List<Message> messages = new ArrayList<>();
 
-    Query query =
-        new Query("Message")
-            .setFilter(new Query.FilterPredicate("user", FilterOperator.EQUAL, user))
-            .addSort("timestamp", SortDirection.DESCENDING);
+    Query query = new Query("Message").setFilter(new Query.FilterPredicate("user", FilterOperator.EQUAL, user))
+        .addSort("timestamp", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
 
     addMessages(messages, results);
@@ -94,31 +90,27 @@ public class Datastore {
     return messages;
   }
 
-
   /**
    * Gets messages posted by all users.
    *
-   * @return a list of messages posted by all users, or empty list if users have never posted a
-   *     message. List is sorted by time descending.
+   * @return a list of messages posted by all users, or empty list if users have
+   *         never posted a message. List is sorted by time descending.
    */
 
+  public List<Message> getAllMessages() {
+    List<Message> messages = new ArrayList<>();
 
- public List<Message> getAllMessages(){
-  List<Message> messages = new ArrayList<>();
+    Query query = new Query("Message").addSort("timestamp", SortDirection.DESCENDING);
+    PreparedQuery results = datastore.prepare(query);
 
-  Query query = new Query("Message")
-    .addSort("timestamp", SortDirection.DESCENDING);
-  PreparedQuery results = datastore.prepare(query);
+    addMessages(messages, results);
+    return messages;
+  }
 
-  addMessages(messages, results);
-  return messages;
- }
- 
- /** Returns the total number of messages for all users. */
-public int getTotalMessageCount(){
-  Query query = new Query("Message");
-  PreparedQuery results = datastore.prepare(query);
-  return results.countEntities(FetchOptions.Builder.withLimit(1000));
-}
-
+  /** Returns the total number of messages for all users. */
+  public int getTotalMessageCount() {
+    Query query = new Query("Message");
+    PreparedQuery results = datastore.prepare(query);
+    return results.countEntities(FetchOptions.Builder.withLimit(1000));
+  }
 }
