@@ -22,16 +22,6 @@ body {
   font-family: sans-serif;
 }
 
-nav {
-  background-color: #ccccff;
-  font-size: 18pt;
-  padding: 10px;
-}
-
-nav a {
-  color: black;
-  margin-right: 10px;
-}
 
 h2 {
   margin: 0;

@@ -45,11 +45,17 @@ limitations under the License.
 </head>
 
 <body onload="buildUI(); createHiddenForm();">
+  <div class="w3-top">
   <nav>
-    <ul id="navigation">
-      <li><a href="/">Home</a></li>
-      <li><a href="/aboutus.html">About Our Team</a></li>
-    </ul>
+   <ul id = "navigation">
+   <div class="w3-bar" id="myNavbar">
+      <i class="fa fa-bars"></i>
+    <a href="/" class="w3-bar-item w3-button">HOME</a>
+    <a href="/aboutus.html" class="w3-bar-item w3-button w3-hide-small"><i class="fa fa-user"></i> ABOUT</a>
+      <i class="fa fa-search"></i>
+    </a>
+  </div>
+  </ul>
   </nav>
   <h1 id="page-title">User Page</h1>
 

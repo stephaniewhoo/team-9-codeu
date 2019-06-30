@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.codeu.data.Datastore;
 import com.google.codeu.data.Message;
 import com.google.gson.Gson;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
 
 /**
  * Handles fetching all messages for the public feed.
@@ -37,7 +39,6 @@ public class MessageFeedServlet extends HttpServlet{
   List<Message> messages = datastore.getAllMessages();
   Gson gson = new Gson();
   String json = gson.toJson(messages);
-  
   response.getOutputStream().println(json);
  }
 }
