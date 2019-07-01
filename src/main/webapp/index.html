@@ -1,12 +1,9 @@
 <!--
 Copyright 2019 Google Inc.
-
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
-
     http://www.apache.org/licenses/LICENSE-2.0
-
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,24 +13,57 @@ limitations under the License.
 
 <!DOCTYPE html>
 <html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <head>
-    <meta charset="UTF-8">
-    <title>CodeU 2019 Starter Project</title>
-    <link rel="stylesheet" href="/css/main.css">
+    <title>Mad Study Squadron</title>
     <script src="/js/navigation-loader.js"></script>
   </head>
+  <style>
+    body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif;}
+    body, html {
+        height: 100%;
+        color: #777;
+        line-height: 1.8;
+    }
+    /* Create a Parallax Effect */
+    .bgimg-1 {
+        background-attachment: fixed;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    /* First image (Logo. Full height) */
+    .bgimg-1 {
+        background-image: url('https://www.insidehighered.com/sites/default/server_files/media/iStock-520374378.jpg');
+        min-height: 100%;
+    }
+    .w3-wide {letter-spacing: 10px;}
+    .w3-hover-opacity {cursor: pointer;}
+
+  </style>
   <body onload="addLoginOrLogoutLinkToNavigation();">
+    <div class="w3-bar w3-black w3-card">
     <nav>
       <ul id="navigation">
-        <li><a href="/">Home</a></li>
-        <li><a href="/aboutus.html">About Our Team</a></li>
+        <a href="/" class="w3-bar-item w3-button w3-padding-large">HOME</a>
+        <a href="/aboutus.html" class="w3-bar-item w3-button w3-padding-large w3-hide-small">ABOUT US</a> 
+        <a href="/feed.html" class="w3-bar-item w3-button w3-padding-large w3-hide-small">FORUM</a>
       </ul>
     </nav>
-    <h1>CodeU Starter Project</h1>
-    <p>This is the CodeU starter project. Click the links above to login and visit your page.
-    You can post messages on your page, and you can visit other user pages if you have
-    their URL.</p>
-    <p>This is your code now! Feel free to make changes, and don't be afraid to get creative!
-    You could start by modifying this page to tell the world more about your team.</p>
+    </div>
+    <div class="bgimg-1 w3-display-container w3-opacity-min" id="home">
+    <div class="w3-display-middle" style="white-space:nowrap;">
+            <span class="w3-center w3-padding-large w3-black w3-xlarge w3-wide w3-animate-opacity">ASK <span class="w3-hide-small">AND</span> ANSWER</span>
+    </div>
+    </div>
+    <div class="w3-display-bottom-middle" style="white-space:nowrap;">
+    <p>This is the Mad Study Squad. Click the links above to login and visit your page.
+    You can post messages on your page, and you can see and reply others messages in feed pages.</p>
+    <p>This is a space you can discuss course related questions with your classmate. Study madly now!</p>
+    </div>
   </body>
-</html>

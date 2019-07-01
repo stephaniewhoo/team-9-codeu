@@ -31,14 +31,14 @@ function addLoginOrLogoutLinkToNavigation() {
       })
       .then((loginStatus) => {
         if (loginStatus.isLoggedIn) {
-          navigationElement.appendChild(createListItem(createLink(
-              '/user-page.html?user=' + loginStatus.username, 'Your Page')));
+          navigationElement.appendChild(createLink(
+              '/user-page.html?user=' + loginStatus.username, 'Your Page'));
 
           navigationElement.appendChild(
-              createListItem(createLink('/logout', 'Logout')));
+              createLink('/logout', 'Logout'));
         } else {
           navigationElement.appendChild(
-              createListItem(createLink('/login', 'Login')));
+              createLink('/login', 'Login'));
         }
       });
 }
@@ -63,6 +63,7 @@ function createListItem(childElement) {
 function createLink(url, text) {
   const linkElement = document.createElement('a');
   linkElement.appendChild(document.createTextNode(text));
+  linkElement.setAttribute('class','w3-bar-item w3-button w3-padding-large w3-hide-small');
   linkElement.href = url;
   return linkElement;
 }
