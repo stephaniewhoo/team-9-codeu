@@ -1,3 +1,5 @@
+package com.google.codeu.servlets;
+
 import com.google.cloud.translate.Translate;
 import com.google.cloud.translate.TranslateOptions;
 import com.google.cloud.translate.Translation;

@@ -18,12 +18,15 @@
  * Adds a login or logout link to the page, depending on whether the user is
  * already logged in.
  */
-function addLoginOrLogoutLinkToNavigation() {
-  const navigationElement = document.getElementById('navigation');
-  if (!navigationElement) {
-    console.warn('Navigation element not found!');
-    return;
-  }
+function setupNavigation() {
+  const div = document.createElement('div');
+  const nav = document.createElement('nav');
+  const navigationElement = document.createElement('ul');
+
+  div.setAttribute('class', 'w3-bar w3-black w3-card');
+  navigationElement.appendChild(createLink('/', 'HOME'));
+  navigationElement.appendChild(createLink('/aboutus.html', 'ABOUT US'));
+  navigationElement.appendChild(createLink('/feed.html', 'FORUM'));
 
   fetch('/login-status')
       .then((response) => {
@@ -41,6 +44,9 @@ function addLoginOrLogoutLinkToNavigation() {
               createLink('/login', 'Login'));
         }
       });
+  nav.appendChild(navigationElement);
+  div.appendChild(nav);
+  document.getElementById('navigation').appendChild(div);
 }
 
 /**
