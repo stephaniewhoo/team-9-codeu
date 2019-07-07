@@ -22,20 +22,13 @@ limitations under the License.
   <meta charset="UTF-8">
   <link rel="stylesheet" href="/css/main.css">
   <link rel="stylesheet" href="/css/user-page.css">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
   <script src="http://malsup.github.com/jquery.form.js"></script>
   <script src="/js/user-page-loader.js"></script>
+  <script src="/js/navigation-loader.js"></script>
   <script src="https://cdn.ckeditor.com/ckeditor5/12.2.0/classic/ckeditor.js"></script>
-  <script>
-    function createHiddenForm() {
-      var myForm = document.createElement('form');
-      myForm.setAttribute('id', 'myForm');
-      myForm.setAttribute('method', 'POST');
-      myForm.setAttribute('enctype', 'multipart/form-data');
-      myForm.setAttribute('class', 'hidden');
-      document.body.appendChild(myForm);
-    }
-  </script>
   <style>
     /* Form is hidden by default. */
     .hidden {
@@ -44,19 +37,8 @@ limitations under the License.
   </style>
 </head>
 
-<body onload="buildUI(); createHiddenForm();">
-  <div class="w3-top">
-  <nav>
-   <ul id = "navigation">
-   <div class="w3-bar" id="myNavbar">
-      <i class="fa fa-bars"></i>
-    <a href="/" class="w3-bar-item w3-button">HOME</a>
-    <a href="/aboutus.html" class="w3-bar-item w3-button w3-hide-small"><i class="fa fa-user"></i> ABOUT</a>
-      <i class="fa fa-search"></i>
-    </a>
-  </div>
-  </ul>
-  </nav>
+<body onload="setupNavigation(); buildUI();">
+  <div id="navigation"></div>
   <h1 id="page-title">User Page</h1>
 
   <form id="message-form" action="/messages" method="POST" class="hidden">
@@ -69,6 +51,8 @@ limitations under the License.
   <hr />
 
   <div id="message-container">Loading...</div>
+
+  <form id="myForm" method="POST" enctype="multipart/form-data" class="hidden"></form>
 </body>
 <script src="/js/MyUploadAdapter.js"></script>
 <script type="text/javascript">
