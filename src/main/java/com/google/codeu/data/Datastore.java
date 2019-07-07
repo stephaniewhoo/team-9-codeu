@@ -19,6 +19,7 @@ package com.google.codeu.data;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterOperator;
@@ -27,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 
 /** Provides access to the data stored in Datastore. */
 public class Datastore {
@@ -39,7 +42,22 @@ public class Datastore {
 
   /** Stores the Message in Datastore. */
   public void storeMessage(Message message) {
-    Entity messageEntity = new Entity("Message", message.getId().toString());
+    Entity messageEntity;
+
+    if (message.getParentId() != null) {
+      Entity parent;
+      try {
+        parent = datastore.get(KeyFactory.createKey("Message", message.getParentId().toString()));
+      } catch (EntityNotFoundException e) {
+        System.out.println("Uh oh");
+        return;
+      }
+
+      messageEntity = new Entity("MessageReply", message.getId().toString(), parent.getKey());
+    } else {
+      messageEntity = new Entity("Message", message.getId().toString());
+    }
+
     messageEntity.setProperty("user", message.getUser());
     messageEntity.setProperty("text", message.getText());
     messageEntity.setProperty("timestamp", message.getTimestamp());
@@ -62,7 +80,7 @@ public class Datastore {
         String text = (String) entity.getProperty("text");
         long timestamp = (long) entity.getProperty("timestamp");
 
-        Message message = new Message(id, user, text, timestamp);
+        Message message = new Message(id, user, text, timestamp, null);
         messages.add(message);
       } catch (Exception e) {
         System.err.println("Error reading message.");
@@ -88,6 +106,23 @@ public class Datastore {
     addMessages(messages, results);
 
     return messages;
+  }
+
+  /**
+   * Gets replies to a certain message.
+   * 
+   * @return a list of replies to a message
+   */
+  public List<Message> getMessageReplies(String messageId) {
+    List<Message> replies = new ArrayList<>();
+
+    Key parentKey = KeyFactory.createKey("Message", messageId);
+    Query query = new Query("MessageReply").setAncestor(parentKey).addSort("timestamp", SortDirection.ASCENDING);
+    PreparedQuery results = datastore.prepare(query);
+
+    addMessages(replies, results);
+
+    return replies;
   }
 
   /**
