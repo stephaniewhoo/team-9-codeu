@@ -68,7 +68,6 @@ public class MessageReplyServlet extends HttpServlet {
   /** Stores a new message reply. */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    System.out.println("AAAahhhhHHHHHHHH\nAHAHHAHAHAH\nA\na\naaaaaaa");
     UserService userService = UserServiceFactory.getUserService();
     if (!userService.isUserLoggedIn()) {
       response.sendRedirect("/index.html");
