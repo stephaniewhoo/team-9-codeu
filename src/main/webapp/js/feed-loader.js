@@ -1,7 +1,13 @@
+const urlParams = new URLSearchParams(window.location.search);
+const parameterClassname = urlParams.get('class');
 const replyIds = [];
+// URL must include ?class=XYZ parameter. If not, redirect to homepage.
+if (!parameterClassname) {
+  window.location.replace('/');
+}
 
 function fetchMessages() {
-  const url = '/feed';
+  const url = '/feed?class=' + parameterClassname;
   fetch(url).then((response) => {
     return response.json();
   }).then((messages) => {
@@ -14,7 +20,7 @@ function fetchMessages() {
     }
     messages.forEach((message) => {
       const messageDiv = buildMessageDiv(message);
-      buildMessageRepliesDiv(message);
+      messageDiv.appendChild(buildMessageRepliesDiv(message));
       messageContainer.appendChild(messageDiv);
     });
     replaceCKEditor();
@@ -50,14 +56,6 @@ function buildMessageDiv(message, isReply = false) {
 
   messageDiv.appendChild(bodyDiv);
 
-  if (!isReply) {
-    // div for replies
-    const replyDiv = document.createElement('div');
-    replyDiv.id = 'reply-container' + id;
-
-    messageDiv.appendChild(replyDiv);
-  }
-
   // footer elements
   const footerDiv = document.createElement('div');
   footerDiv.classList.add('message-footer');
@@ -86,7 +84,7 @@ function buildMessageDiv(message, isReply = false) {
     const replyForm = document.createElement('form');
     replyForm.id = 'reply-form' + id;
     replyForm.classList.add('message-input');
-    replyForm.action = '/message-reply?id=' + id;
+    replyForm.action = '/message-reply?id=' + id + '&class=' + parameterClassname;
     replyForm.method = 'POST';
     replyForm.style.display = 'none';
 
@@ -118,20 +116,30 @@ function createButton(text) {
 
 function buildMessageRepliesDiv(message) {
   const url = '/message-reply?id=' + message.id;
+  const replyContainer = document.createElement('div');
+  replyContainer.id = 'reply-container' + message.id;
   fetch(url).then((response) => {
     return response.json();
   }).then((replies) => {
-    const replyContainer = document.getElementById('reply-container' + message.id);
     replies.forEach((reply) => {
       // build reply div and append it to replyContainer
       const replyDiv = buildMessageDiv(reply, isReply = true);
       replyContainer.appendChild(replyDiv);
     });
-  })
+  });
+  return replyContainer;
+}
+
+// sets the action field of the form to /messages + class name parameter, then show form
+function setMessageFormAction() {
+  const form = document.getElementById('message-form');
+  form.action = '/messages?class=' + parameterClassname;
+  form.classList.remove('hidden');
 }
 
 // Fetch data and populate the UI of the page.
 function buildUI() {
+  setMessageFormAction();
   fetchMessages();
 }
 

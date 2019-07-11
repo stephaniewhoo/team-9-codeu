@@ -21,8 +21,8 @@ class MyUploadAdapter {
 
   _initRequest(file, resolve, reject) {
     const request = this.request = new XMLHttpRequest();
+    const myForm = document.getElementById('imgForm');
     const formData = this.formData = new FormData(myForm);
-    var myForm = document.getElementById('myForm');
 
     formData.append('image', file);
 

@@ -17,11 +17,28 @@
   <div id="navigation"></div>
   <div id="content">
     <h1>Message Feed</h1>
-    <hr />
+
+    <form id="message-form" method="POST" class="hidden">
+      Enter a new message:
+      <br />
+      <textarea name="text" id="message-input"></textarea>
+      <br />
+      <input type="submit" value="Submit">
+    </form>
+
     <div id="message-container">Loading...</div>
   </div>
 
-  <form id="myForm" method="POST" enctype="multipart/form-data" class="hidden"></form>
+  <form id="imgForm" method="POST" enctype="multipart/form-data" class="hidden"></form>
 </body>
+<script src="/js/MyUploadAdapter.js"></script>
+<script type="text/javascript">
+  ClassicEditor.create(document.getElementById('message-input'), {
+    extraPlugins: [MyCustomUploadAdapterPlugin],
+  })
+    .catch(error => {
+      console.log(error);
+    });
+</script>
 
 </html>

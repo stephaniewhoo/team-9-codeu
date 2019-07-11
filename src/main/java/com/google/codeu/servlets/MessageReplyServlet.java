@@ -85,9 +85,10 @@ public class MessageReplyServlet extends HttpServlet {
     String textWithImagesReplaced = text.replaceAll(regex, replacement);
 
     String messageId = request.getParameter("id");
+    String className = request.getParameter("class");
 
-    Message reply = new Message(user, textWithImagesReplaced, messageId);
+    Message reply = new Message(user, textWithImagesReplaced, messageId, className);
     datastore.storeMessage(reply);
-    response.sendRedirect("/feed.html");
+    response.sendRedirect("/feed.html?class=" + className);
   }
 }

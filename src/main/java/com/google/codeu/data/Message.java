@@ -26,21 +26,22 @@ public class Message {
   private String text;
   private long timestamp;
   private UUID parentId;
+  private String className;
 
   /**
    * Constructs a new {@link Message} posted by {@code user} with {@code text}
    * content. Generates a random ID and uses the current system time for the
    * creation time.
    */
-  public Message(String user, String text) {
-    this(UUID.randomUUID(), user, text, System.currentTimeMillis(), null);
+  public Message(String user, String text, String className) {
+    this(UUID.randomUUID(), user, text, System.currentTimeMillis(), null, className);
   }
 
-  public Message(String user, String text, String parentId) {
-    this(UUID.randomUUID(), user, text, System.currentTimeMillis(), parentId);
+  public Message(String user, String text, String parentId, String className) {
+    this(UUID.randomUUID(), user, text, System.currentTimeMillis(), parentId, className);
   }
 
-  public Message(UUID id, String user, String text, long timestamp, String parentId) {
+  public Message(UUID id, String user, String text, long timestamp, String parentId, String className) {
     this.id = id;
     this.user = user;
     this.text = text;
@@ -48,6 +49,7 @@ public class Message {
     if (parentId != null) {
       this.parentId = UUID.fromString(parentId);
     }
+    this.className = className;
   }
 
   public UUID getId() {
@@ -68,5 +70,13 @@ public class Message {
 
   public UUID getParentId() {
     return parentId;
+  }
+
+  public String getClassName() {
+    return className;
+  }
+
+  public void setClassName(String className) {
+    this.className = className;
   }
 }

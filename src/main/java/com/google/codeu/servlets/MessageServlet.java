@@ -80,13 +80,14 @@ public class MessageServlet extends HttpServlet {
 
     // since CKEdit input html
     String text = Jsoup.clean(request.getParameter("text"), Whitelist.basicWithImages());
+    String className = request.getParameter("class");
 
     // replace image urls with html tags
     String regex = "(https?://\\S+\\.(png|jpg))";
     String replacement = "<img src=\"$1\" />";
     String textWithImagesReplaced = text.replaceAll(regex, replacement);
-    Message message = new Message(user, textWithImagesReplaced);
+    Message message = new Message(user, textWithImagesReplaced, className);
     datastore.storeMessage(message);
-    response.sendRedirect("/user-page.html?user=" + user);
+    response.sendRedirect("/feed.html?class=" + className);
   }
 }

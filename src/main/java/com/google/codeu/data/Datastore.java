@@ -61,6 +61,7 @@ public class Datastore {
     messageEntity.setProperty("user", message.getUser());
     messageEntity.setProperty("text", message.getText());
     messageEntity.setProperty("timestamp", message.getTimestamp());
+    messageEntity.setProperty("class", message.getClassName());
 
     datastore.put(messageEntity);
   }
@@ -70,7 +71,6 @@ public class Datastore {
    *
    * @return null but mutate the array in the param with info
    */
-
   public void addMessages(List<Message> messages, PreparedQuery results) {
     for (Entity entity : results.asIterable()) {
       try {
@@ -79,8 +79,9 @@ public class Datastore {
         String user = (String) entity.getProperty("user");
         String text = (String) entity.getProperty("text");
         long timestamp = (long) entity.getProperty("timestamp");
+        String className = (String) entity.getProperty("class");
 
-        Message message = new Message(id, user, text, timestamp, null);
+        Message message = new Message(id, user, text, timestamp, null, className);
         messages.add(message);
       } catch (Exception e) {
         System.err.println("Error reading message.");
@@ -131,7 +132,6 @@ public class Datastore {
    * @return a list of messages posted by all users, or empty list if users have
    *         never posted a message. List is sorted by time descending.
    */
-
   public List<Message> getAllMessages() {
     List<Message> messages = new ArrayList<>();
 
@@ -147,5 +147,56 @@ public class Datastore {
     Query query = new Query("Message");
     PreparedQuery results = datastore.prepare(query);
     return results.countEntities(FetchOptions.Builder.withLimit(1000));
+  }
+
+  /**
+   * Stores a class
+   * 
+   * @return true if added, false if class already exists
+   */
+  public boolean storeClass(String className) {
+    // check if class already exists before adding it
+    Query query = new Query("Class").setFilter(new Query.FilterPredicate("name", FilterOperator.EQUAL, className));
+    PreparedQuery results = datastore.prepare(query);
+    if (results.countEntities(FetchOptions.Builder.withLimit(1000)) > 0) {
+      return false;
+    }
+    Entity entity = new Entity("Class");
+    entity.setProperty("name", className);
+    datastore.put(entity);
+    System.out.println("class added");
+    return true;
+  }
+
+  /**
+   * Gets all classes
+   * 
+   * @return list of classes
+   */
+  public List<String> getClasses() {
+    List<String> classes = new ArrayList<>();
+    PreparedQuery results = datastore.prepare(new Query("Class"));
+    for (Entity entity : results.asIterable()) {
+      classes.add((String) entity.getProperty("name"));
+    }
+    return classes;
+  }
+
+  /**
+   * Gets messages for a class
+   * 
+   * @param className name of classes
+   * @return list of messages for that class
+   */
+  public List<Message> getClassMessages(String className) {
+    List<Message> messages = new ArrayList<>();
+
+    Query query = new Query("Message").setFilter(new Query.FilterPredicate("class", FilterOperator.EQUAL, className))
+        .addSort("timestamp", SortDirection.DESCENDING);
+    PreparedQuery results = datastore.prepare(query);
+
+    addMessages(messages, results);
+
+    return messages;
   }
 }
