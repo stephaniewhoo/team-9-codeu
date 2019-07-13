@@ -19,6 +19,7 @@ package com.google.codeu.data;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterOperator;
@@ -27,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 
 /** Provides access to the data stored in Datastore. */
 public class Datastore {
@@ -39,10 +42,26 @@ public class Datastore {
 
   /** Stores the Message in Datastore. */
   public void storeMessage(Message message) {
-    Entity messageEntity = new Entity("Message", message.getId().toString());
+    Entity messageEntity;
+
+    if (message.getParentId() != null) {
+      Entity parent;
+      try {
+        parent = datastore.get(KeyFactory.createKey("Message", message.getParentId().toString()));
+      } catch (EntityNotFoundException e) {
+        System.out.println("Uh oh");
+        return;
+      }
+
+      messageEntity = new Entity("MessageReply", message.getId().toString(), parent.getKey());
+    } else {
+      messageEntity = new Entity("Message", message.getId().toString());
+    }
+
     messageEntity.setProperty("user", message.getUser());
     messageEntity.setProperty("text", message.getText());
     messageEntity.setProperty("timestamp", message.getTimestamp());
+    messageEntity.setProperty("class", message.getClassName());
 
     datastore.put(messageEntity);
   }
@@ -52,7 +71,6 @@ public class Datastore {
    *
    * @return null but mutate the array in the param with info
    */
-
   public void addMessages(List<Message> messages, PreparedQuery results) {
     for (Entity entity : results.asIterable()) {
       try {
@@ -61,8 +79,9 @@ public class Datastore {
         String user = (String) entity.getProperty("user");
         String text = (String) entity.getProperty("text");
         long timestamp = (long) entity.getProperty("timestamp");
+        String className = (String) entity.getProperty("class");
 
-        Message message = new Message(id, user, text, timestamp);
+        Message message = new Message(id, user, text, timestamp, null, className);
         messages.add(message);
       } catch (Exception e) {
         System.err.println("Error reading message.");
@@ -91,12 +110,28 @@ public class Datastore {
   }
 
   /**
+   * Gets replies to a certain message.
+   * 
+   * @return a list of replies to a message
+   */
+  public List<Message> getMessageReplies(String messageId) {
+    List<Message> replies = new ArrayList<>();
+
+    Key parentKey = KeyFactory.createKey("Message", messageId);
+    Query query = new Query("MessageReply").setAncestor(parentKey).addSort("timestamp", SortDirection.ASCENDING);
+    PreparedQuery results = datastore.prepare(query);
+
+    addMessages(replies, results);
+
+    return replies;
+  }
+
+  /**
    * Gets messages posted by all users.
    *
    * @return a list of messages posted by all users, or empty list if users have
    *         never posted a message. List is sorted by time descending.
    */
-
   public List<Message> getAllMessages() {
     List<Message> messages = new ArrayList<>();
 
@@ -112,5 +147,56 @@ public class Datastore {
     Query query = new Query("Message");
     PreparedQuery results = datastore.prepare(query);
     return results.countEntities(FetchOptions.Builder.withLimit(1000));
+  }
+
+  /**
+   * Stores a class
+   * 
+   * @return true if added, false if class already exists
+   */
+  public boolean storeClass(String className) {
+    // check if class already exists before adding it
+    Query query = new Query("Class").setFilter(new Query.FilterPredicate("name", FilterOperator.EQUAL, className));
+    PreparedQuery results = datastore.prepare(query);
+    if (results.countEntities(FetchOptions.Builder.withLimit(1000)) > 0) {
+      return false;
+    }
+    Entity entity = new Entity("Class");
+    entity.setProperty("name", className);
+    datastore.put(entity);
+    System.out.println("class added");
+    return true;
+  }
+
+  /**
+   * Gets all classes
+   * 
+   * @return list of classes
+   */
+  public List<String> getClasses() {
+    List<String> classes = new ArrayList<>();
+    PreparedQuery results = datastore.prepare(new Query("Class"));
+    for (Entity entity : results.asIterable()) {
+      classes.add((String) entity.getProperty("name"));
+    }
+    return classes;
+  }
+
+  /**
+   * Gets messages for a class
+   * 
+   * @param className name of classes
+   * @return list of messages for that class
+   */
+  public List<Message> getClassMessages(String className) {
+    List<Message> messages = new ArrayList<>();
+
+    Query query = new Query("Message").setFilter(new Query.FilterPredicate("class", FilterOperator.EQUAL, className))
+        .addSort("timestamp", SortDirection.DESCENDING);
+    PreparedQuery results = datastore.prepare(query);
+
+    addMessages(messages, results);
+
+    return messages;
   }
 }

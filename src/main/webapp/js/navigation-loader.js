@@ -26,7 +26,7 @@ function setupNavigation() {
   div.setAttribute('class', 'w3-bar w3-black w3-card');
   navigationElement.appendChild(createLink('/', 'HOME'));
   navigationElement.appendChild(createLink('/aboutus.html', 'ABOUT US'));
-  navigationElement.appendChild(createLink('/feed.html', 'FORUM'));
+  navigationElement.appendChild(createLink('/classes.html', 'CLASS LIST'));
 
   fetch('/login-status')
       .then((response) => {

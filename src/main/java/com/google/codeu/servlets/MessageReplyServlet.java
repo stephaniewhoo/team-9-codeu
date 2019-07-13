@@ -31,9 +31,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 
-/** Handles fetching and saving {@link Message} instances. */
-@WebServlet("/messages")
-public class MessageServlet extends HttpServlet {
+@WebServlet("/message-reply")
+public class MessageReplyServlet extends HttpServlet {
 
   private Datastore datastore;
 
@@ -43,33 +42,32 @@ public class MessageServlet extends HttpServlet {
   }
 
   /**
-   * Responds with a JSON representation of {@link Message} data for a specific
-   * user. Responds with an empty array if the user is not provided.
+   * Responds with a JSON representation of message reply data for a specific
+   * message. Responds with an empty array if the message is not provided.
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     response.setContentType("application/json");
 
-    String user = request.getParameter("user");
+    String id = request.getParameter("id");
 
-    if (user == null || user.equals("")) {
+    if (id == null || id.equals("")) {
       // Request is invalid, return empty array
       response.getWriter().println("[]");
       return;
     }
 
-    List<Message> messages = datastore.getMessages(user);
+    List<Message> messages = datastore.getMessageReplies(id);
     Gson gson = new Gson();
     String json = gson.toJson(messages);
 
     response.getWriter().println(json);
   }
 
-  /** Stores a new {@link Message}. */
+  /** Stores a new message reply. */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
     UserService userService = UserServiceFactory.getUserService();
     if (!userService.isUserLoggedIn()) {
       response.sendRedirect("/index.html");
@@ -80,14 +78,17 @@ public class MessageServlet extends HttpServlet {
 
     // since CKEdit input html
     String text = Jsoup.clean(request.getParameter("text"), Whitelist.basicWithImages());
-    String className = request.getParameter("class");
 
     // replace image urls with html tags
     String regex = "(https?://\\S+\\.(png|jpg))";
     String replacement = "<img src=\"$1\" />";
     String textWithImagesReplaced = text.replaceAll(regex, replacement);
-    Message message = new Message(user, textWithImagesReplaced, className);
-    datastore.storeMessage(message);
+
+    String messageId = request.getParameter("id");
+    String className = request.getParameter("class");
+
+    Message reply = new Message(user, textWithImagesReplaced, messageId, className);
+    datastore.storeMessage(reply);
     response.sendRedirect("/feed.html?class=" + className);
   }
 }
