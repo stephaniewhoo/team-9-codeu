@@ -18,13 +18,12 @@
    and will fill the width of its parent element. */
 
 body {
-  margin: 0;
-  background: linear-gradient(white, #ccccff) fixed;
+  margin: 30px;
   font-family: sans-serif;
 }
 
 h2 {
-  margin: 0;
+  margin: 30px;
 }
 
 input[type=submit] {

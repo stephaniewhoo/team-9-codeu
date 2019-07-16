@@ -20,7 +20,7 @@ limitations under the License.
 <head>
   <title>User Page</title>
   <meta charset="UTF-8">
-  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/index.css">
   <link rel="stylesheet" href="/css/user-page.css">
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
@@ -39,20 +39,20 @@ limitations under the License.
 
 <body onload="setupNavigation(); buildUI();">
   <div id="navigation"></div>
-  <h1 id="page-title">User Page</h1>
+  <h1  style="margin-left:30px;" id="page-title">User Page</h1>
 
-  <form id="message-form" action="/messages" method="POST" class="hidden">
+  <form style="margin-left:30px;" id="message-form" action="/messages" method="POST" class="hidden">
     Enter a new message:
     <br />
-    <textarea name="text" id="message-input"></textarea>
+    <textarea style="max-width:400px;" name="text" id="message-input"></textarea>
     <br />
     <input type="submit" value="Submit">
   </form>
   <hr />
 
-  <div id="message-container">Loading...</div>
+  <div style = "margin=left:30px;" id="message-container">Loading...</div>
 
-  <form id="myForm" method="POST" enctype="multipart/form-data" class="hidden"></form>
+  <form style="margin-left:30px;" id="myForm" method="POST" enctype="multipart/form-data" class="hidden"></form>
 </body>
 <script src="/js/MyUploadAdapter.js"></script>
 <script type="text/javascript">
