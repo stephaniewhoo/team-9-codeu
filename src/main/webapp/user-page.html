@@ -39,20 +39,22 @@ limitations under the License.
 
 <body onload="setupNavigation(); buildUI();">
   <div id="navigation"></div>
+  <div id="content">
   <h1  style="margin-left:30px;" id="page-title">User Page</h1>
 
-  <form style="margin-left:30px;" id="message-form" action="/messages" method="POST" class="hidden">
+  <form id="message-form" action="/messages" method="POST" class="hidden">
     Enter a new message:
     <br />
-    <textarea style="max-width:400px;" name="text" id="message-input"></textarea>
+    <textarea name="text" id="message-input"></textarea>
     <br />
     <input type="submit" value="Submit">
   </form>
   <hr />
 
-  <div style = "margin=left:30px;" id="message-container">Loading...</div>
+  <div id="message-container">Loading...</div>
+  </div>
 
-  <form style="margin-left:30px;" id="myForm" method="POST" enctype="multipart/form-data" class="hidden"></form>
+  <form style="margin-left:30px;" id="imgForm" method="POST" enctype="multipart/form-data" class="hidden"></form>
 </body>
 <script src="/js/MyUploadAdapter.js"></script>
 <script type="text/javascript">

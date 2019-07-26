@@ -56,19 +56,11 @@ function buildMessageDiv(message, isReply = false) {
 
   messageDiv.appendChild(bodyDiv);
 
-  // footer elements
-  const footerDiv = document.createElement('div');
-  footerDiv.classList.add('message-footer');
-
-  const likeButton = createButton('Like');
-  likeButton.onclick = () => {
-    alert('This doesn\'t do anything yet :(');
-  }
-
-  footerDiv.appendChild(likeButton);
-
   // add reply form for non-replies
   if (!isReply) {
+    // footer elements
+    const footerDiv = document.createElement('div');
+    footerDiv.classList.add('message-footer');
 
     const replyButton = createButton('Reply');
     replyButton.onclick = () => {
@@ -101,8 +93,9 @@ function buildMessageDiv(message, isReply = false) {
 
     replyForm.appendChild(submit);
     footerDiv.appendChild(replyForm);
+    messageDiv.appendChild(footerDiv);
   }
-  messageDiv.appendChild(footerDiv);
+
   return messageDiv;
 }
 
